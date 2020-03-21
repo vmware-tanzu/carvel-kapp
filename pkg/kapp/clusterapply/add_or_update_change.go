@@ -93,7 +93,7 @@ func (c AddOrUpdateChange) Apply() error {
 				if errors.IsConflict(err) {
 					return c.tryToResolveUpdateConflict(err)
 				}
-				return err
+				return fmt.Errorf("Update error is non-conflict #1: %s (%#v)", err, err)
 			}
 
 			err = c.recordAppliedResource(updatedRes)
@@ -107,7 +107,7 @@ func (c AddOrUpdateChange) Apply() error {
 				if errors.IsInvalid(err) {
 					return c.replace()
 				}
-				return err
+				return fmt.Errorf("Update error is non-invalid #3: %s (%#v)", err, err)
 			}
 
 			err = c.recordAppliedResource(updatedRes)
@@ -185,7 +185,7 @@ func (a AddOrUpdateChange) tryToResolveUpdateConflict(origErr error) error {
 			if errors.IsConflict(err) {
 				continue
 			}
-			return err
+			return fmt.Errorf("Update error is non-conflict #2: %s (%#v)", err, err)
 		}
 
 		return a.recordAppliedResource(updatedRes)
