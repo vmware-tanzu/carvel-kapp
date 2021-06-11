@@ -10,6 +10,7 @@ import (
 	semver "github.com/hashicorp/go-version"
 	ctlres "github.com/k14s/kapp/pkg/kapp/resources"
 	"github.com/k14s/kapp/pkg/kapp/version"
+	"github.com/k14s/kapp/pkg/kapp/yttresmod"
 )
 
 const (
@@ -24,6 +25,7 @@ type Config struct {
 	MinimumRequiredVersion string `json:"minimumRequiredVersion,omitempty"`
 
 	RebaseRules         []RebaseRule
+	ModificationRules   []ModificationRule
 	WaitRules           []WaitRule
 	OwnershipLabelRules []OwnershipLabelRule
 	LabelScopingRules   []LabelScopingRule
@@ -54,10 +56,26 @@ type WaitRuleConditionMatcher struct {
 
 type RebaseRule struct {
 	ResourceMatchers []ResourceMatcher
-	Path             ctlres.Path
-	Paths            []ctlres.Path
-	Type             string
-	Sources          []ctlres.FieldCopyModSource
+
+	Path    ctlres.Path
+	Paths   []ctlres.Path
+	Type    string
+	Sources []ctlres.FieldCopyModSource
+
+	Ytt *RebaseRuleYtt
+}
+
+type RebaseRuleYtt struct {
+	TemplateYAML string `json:"template.yml"`
+}
+
+type ModificationRule struct {
+	ResourceMatchers []ResourceMatcher
+	Ytt              *ModificationRuleYtt
+}
+
+type ModificationRuleYtt struct {
+	TemplateYAML string `json:"template.yml"`
 }
 
 type DiffAgainstLastAppliedFieldExclusionRule struct {
@@ -176,10 +194,23 @@ func (c Config) Validate() error {
 		}
 	}
 
+	for i, rule := range c.ModificationRules {
+		err := rule.Validate()
+		if err != nil {
+			return fmt.Errorf("Validating modification rule %d: %s", i, err)
+		}
+	}
+
 	return nil
 }
 
 func (r RebaseRule) Validate() error {
+	if r.Ytt != nil {
+		if len(r.Path) > 0 || len(r.Paths) > 0 || len(r.Type) > 0 || len(r.Sources) > 0 {
+			return fmt.Errorf("Expected only resourceMatchers specified with ytt configuration")
+		}
+		return nil
+	}
 	if len(r.Path) > 0 && len(r.Paths) > 0 {
 		return fmt.Errorf("Expected only one of path or paths specified")
 	}
@@ -190,6 +221,15 @@ func (r RebaseRule) Validate() error {
 }
 
 func (r RebaseRule) AsMods() []ctlres.ResourceModWithMultiple {
+	if r.Ytt != nil {
+		return []ctlres.ResourceModWithMultiple{yttresmod.Mod{
+			ResourceMatcher: ctlres.AnyMatcher{
+				Matchers: ResourceMatchers(r.ResourceMatchers).AsResourceMatchers(),
+			},
+			TemplateYAML: r.Ytt.TemplateYAML,
+		}}
+	}
+
 	var mods []ctlres.ResourceModWithMultiple
 	var paths []ctlres.Path
 
@@ -224,6 +264,25 @@ func (r RebaseRule) AsMods() []ctlres.ResourceModWithMultiple {
 	}
 
 	return mods
+}
+
+func (r ModificationRule) Validate() error {
+	if r.Ytt != nil {
+		return nil
+	}
+	return fmt.Errorf("Expected to find ytt configuration")
+}
+
+func (r ModificationRule) AsMods() []ctlres.ResourceModWithMultiple {
+	if r.Ytt != nil {
+		return []ctlres.ResourceModWithMultiple{yttresmod.Mod{
+			ResourceMatcher: ctlres.AnyMatcher{
+				Matchers: ResourceMatchers(r.ResourceMatchers).AsResourceMatchers(),
+			},
+			TemplateYAML: r.Ytt.TemplateYAML,
+		}}
+	}
+	return nil
 }
 
 func (r DiffAgainstLastAppliedFieldExclusionRule) AsMod() ctlres.FieldRemoveMod {
