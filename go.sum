@@ -481,8 +481,6 @@ github.com/jtolds/gls v4.20.0+incompatible/go.mod h1:QJZ7F/aHp+rZTRtaJ1ow/lLfFfV
 github.com/julienschmidt/httprouter v1.2.0/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7VTCxuUUipMqKk8s4w=
 github.com/k14s/difflib v0.0.0-20200108171459-b101e55e0592 h1:Qt52IIUgcCU2lHWbmBTTzp5IDJ0UM4Kc5BKmGmhTZJ0=
 github.com/k14s/difflib v0.0.0-20200108171459-b101e55e0592/go.mod h1:B0xN2MiNBGWOWi9CcfAo9LBI8IU4J1utlbOIJCsmKr4=
-github.com/k14s/kapp-controller v0.1.0 h1:i+tp/20p5c4m+CVBjeSdU3iWD/sbigZPPP/xYkyRbAc=
-github.com/k14s/kapp-controller v0.1.0/go.mod h1:fugFj3Mwg1YPEgVBrkmoibmDx3paS0bNFFxABbG0PGU=
 github.com/k14s/semver/v4 v4.0.1-0.20210701191048-266d47ac6115 h1:wKSifC/VbCaQMqXYn6/gSFqle82OX4bE3KYALDU9FlU=
 github.com/k14s/semver/v4 v4.0.1-0.20210701191048-266d47ac6115/go.mod h1:mGrnmO5qnhJIaSiwMo05cvRL6Ww9ccYbTgNFcm6RHZQ=
 github.com/kisielk/errcheck v1.1.0/go.mod h1:EZBBE59ingxPouuu3KfxchcWSUPOHkagtvWXihfKN4Q=

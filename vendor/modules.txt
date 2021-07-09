@@ -63,9 +63,6 @@ github.com/json-iterator/go
 # github.com/k14s/difflib v0.0.0-20200108171459-b101e55e0592
 ## explicit
 github.com/k14s/difflib
-# github.com/k14s/kapp-controller v0.1.0
-## explicit
-github.com/k14s/kapp-controller/pkg/apis/kappctrl/v1alpha1
 # github.com/k14s/semver/v4 v4.0.1-0.20210701191048-266d47ac6115
 github.com/k14s/semver/v4
 # github.com/mattn/go-colorable v0.1.6
