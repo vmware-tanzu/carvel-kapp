@@ -1,7 +1,11 @@
+// Copyright 2021 VMware, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
 package resourcesmisc
 
 import (
 	"fmt"
+
 	ctlres "github.com/k14s/kapp/pkg/kapp/resources"
 	appv1alpha1 "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/kappctrl/v1alpha1"
 	pkgv1alpha1 "github.com/vmware-tanzu/carvel-kapp-controller/pkg/apis/packaging/v1alpha1"
